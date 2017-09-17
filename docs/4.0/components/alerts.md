@@ -6,20 +6,6 @@ group: components
 toc: true
 ---
 
-### Examples
-
-Alerts are available for any length of text, as well as an optional dismiss button. For proper styling, use one of the four **required** contextual classes (e.g., `.alert-success`). For inline dismissal, use the [alerts jQuery plugin](#dismissing).
-
-{% example html %}
-{% for color in site.data.theme-colors %}
-<div class="alert alert-{{ color.name }}" role="alert">
-  This is a {{ color.name }} alert—check it out!
-</div>{% endfor %}
-{% endexample %}
-
-{% capture callout-include %}{% include callout-warning-color-assistive-technologies.md %}{% endcapture %}
-{{ callout-include | markdownify }}
-
 ### Link color
 
 Use the `.alert-link` utility class to quickly provide matching colored links within any alert.
