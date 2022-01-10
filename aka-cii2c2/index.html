@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"
+        integrity="sha256-Y26AMvaIfrZ1EQU49pf6H4QzVTrOI8m9wQYKkftBt4s=" crossorigin="anonymous"></script>
+    <link href="sticky-footer.css" rel="stylesheet">
+    <title>Tubes AKA (CII2C2) 2021 - IF4401</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+        <div class="container">
+            <h1 class="mt-5">Tugas Besar Analisis Kompleksitas Algoritma</h1>
+            <p class="lead">Perbandingan serta visualisasi kompleksitas algoritma sorting heapsort dan shaker-sort.</p>
+            <p class="lead">Pada tugas besar ini, kami akan membandingkan bagaimana algoritma <a href="#heapsort"
+                    class="link-primary">heap sort</a> dan <a href="#shakersort" class="link-primary">shaker
+                    sort</a> bekerja dengan beberapa <i>input size</i>.</p>
+
+            <p>Input Size: </p>
+            <form name="inputSizeForm">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize25" value="25" checked>
+                    <label class="form-check-label" for="inputSize25">25</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize50" value="50">
+                    <label class="form-check-label" for="inputSize50">50</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize100" value="100">
+                    <label class="form-check-label" for="inputSize100">100</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize500" value="500">
+                    <label class="form-check-label" for="inputSize500">500</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize1000" value="1000">
+                    <label class="form-check-label" for="inputSize1000">1.000</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inputSize" id="inputSize10000" value="10000">
+                    <label class="form-check-label" for="inputSize10000">10.000</label>
+                </div>
+            </form>
+
+            <p class="mt-3">Data: </p>
+            <code id="arrayData">
+                []
+            </code>
+
+            <br>
+
+            <p onclick="updateData()" class="btn btn-primary mt-3">
+                Randomize
+            </p>
+            <p onclick="sort()" class="btn btn-primary mt-3">
+                Sort
+            </p>
+
+            <p class="mt-3">Sorted Data: </p>
+            <code id="sortedArrayData">
+                []
+            </code>
+
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Algoritma</th>
+                        <th scope="col">Input Size</th>
+                        <th scope="col">No. of Operation</th>
+                        <th scope="col">Execution Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Heap Sort</td>
+                        <td id="tbl-heap-inputsize">25</td>
+                        <td id="tbl-heap-operation">-</td>
+                        <td id="tbl-heap-exectime">-</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Shaker Sort</td>
+                        <td id="tbl-shaker-inputsize">25</td>
+                        <td id="tbl-shaker-operation">-</td>
+                        <td id="tbl-shaker-exectime">-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <div id="heapsort">
+                <h3 class="mt-5"># Heap Sort</h3>
+                <p class="lead">Heap Sort merupakan sebuah algoritma yang memisahkan data menjadi wilayah yang diurutkan
+                    dan tidak diurutkan, dan secara iteratif mengecilkan wilayah yang tidak diurutkan dengan
+                    mengekstraksi elemen terbesar darinya dan memasukkannya ke dalam wilayah yang diurutkan.
+                </p>
+
+                <img src="img/heapsort-visual.gif" class="img-fluid mx-auto d-block" alt="heapsort visualization">
+
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">Best Case</th>
+                            <th scope="col">Average Case</th>
+                            <th scope="col">Worst Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">O(n log(n)) / O(n)</th>
+                            <th scope="row">O(n log(n))</th>
+                            <th scope="row">O(n log(n))</th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <canvas id="heapsortchart" width="200" height="200"></canvas>
+            </div>
+
+            <div id="shakersort" class="mb-5">
+                <h3 class="mt-5"># Shaker Sort</h3>
+                <p class="lead">Algoritma Cocktail sort merupakan variasi dari algoritma Bubble sort. Dimana ia bekerja
+                    ara hampir mirip dengan cara kerja dari algoritma Bubble Sort. Perbedaannya adalah Shaker sort
+                    melakukan pengurutan array dari dua arah.
+                </p>
+
+                <img src="img/shakersort-visual.gif" class="img-fluid mx-auto d-block" alt="heapsort visualization">
+
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">Best Case</th>
+                            <th scope="col">Average Case</th>
+                            <th scope="col">Worst Case</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">O(n)</th>
+                            <th scope="row">O(n^2)</th>
+                            <th scope="row">O(n^2)</th>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <canvas id="shakersortchart" width="200" height="200"></canvas>
+            </div>
+
+            <div id="summary">
+                <h3 class="mt-5"># Kesimpulan</h3>
+
+                <canvas id="summarychart" width="200" height="200"></canvas>
+                <p class="lead mt-5">Dari pengujian yang kami buat, setelah membandingkan kedua algoritma antara
+                    Heap-sort dan Cocktail-sort, maka kami dapat disimpulkan bahwa algoritma Heap-sort lebih efisien dalam banyaknya operasi yang dilakukan dan waktu yang dibutuhkan dalam pengurutan dibandingkan
+                    Cocktail-sort. Kami juga menyadari bahwa algoritma Heap-sort akan terasa lebih efisien pada saat input size lebih dari 500.
+                </p>
+            </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+
+    <script>
+        var inputSize = 25;
+
+        var rad = document.inputSizeForm.inputSize;
+        var prev = null;
+        for (var i = 0; i < rad.length; i++) {
+            rad[i].addEventListener('change', function () {
+                if (this !== prev) {
+                    prev = this;
+                }
+
+                document.getElementById("tbl-heap-inputsize").innerHTML = this.value
+                document.getElementById("tbl-shaker-inputsize").innerHTML = this.value
+
+                inputSize = this.value
+                updateData()
+            });
+        }
+
+        var randomData = [];
+        var heapSorted = [];
+        var shakerSorted = [];
+
+        var data = [];
+        var data2 = [];
+
+        var data3 = [];
+        var data4 = [];
+
+        for (let i = 0; i <= 25; i++) {
+            prev = i * Math.log10(i);
+            data.push({
+                x: i,
+                y: prev
+            });
+
+            prev = i;
+            data2.push({
+                x: i,
+                y: prev
+            });
+
+            prev = Math.pow(i, 2);
+            data3.push({
+                x: i,
+                y: prev
+            });
+
+            prev = i;
+            data4.push({
+                x: i,
+                y: prev
+            });
+        }
+
+        const ctx = document.getElementById('heapsortchart').getContext('2d');
+        const ctx2 = document.getElementById('shakersortchart').getContext('2d');
+        const ctx3 = document.getElementById('summarychart').getContext('2d');
+        const totalDuration = 1000;
+        const delayBetweenPoints = totalDuration / data.length;
+        const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart
+            .getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
+        const animation = {
+            x: {
+                type: 'number',
+                easing: 'linear',
+                duration: delayBetweenPoints,
+                from: NaN, // the point is initially skipped
+                delay(ctx) {
+                    if (ctx.type !== 'data' || ctx.xStarted) {
+                        return 0;
+                    }
+                    ctx.xStarted = true;
+                    return ctx.index * delayBetweenPoints;
+                }
+            },
+            y: {
+                type: 'number',
+                easing: 'linear',
+                duration: delayBetweenPoints,
+                from: previousY,
+                delay(ctx) {
+                    if (ctx.type !== 'data' || ctx.yStarted) {
+                        return 0;
+                    }
+                    ctx.yStarted = true;
+                    return ctx.index * delayBetweenPoints;
+                }
+            }
+        };
+        const heapSortChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                        label: 'Average/Worst Case',
+                        borderColor: "#C84B31",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data,
+                    },
+                    {
+                        label: 'Best Case',
+                        borderColor: "#22577E",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data2,
+                    }
+                ]
+            },
+            options: {
+                animation,
+                interaction: {
+                    intersect: false
+                },
+                plugins: {
+                    legend: true
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                    },
+                }
+            }
+        });
+
+        const shakerSortChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                datasets: [{
+                        label: 'Average/Worst Case',
+                        borderColor: "#C84B31",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data3,
+                    },
+                    {
+                        label: 'Best Case',
+                        borderColor: "#22577E",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data4,
+                    }
+                ]
+            },
+            options: {
+                animation,
+                interaction: {
+                    intersect: false
+                },
+                plugins: {
+                    legend: true
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                    },
+                }
+            }
+        });
+
+        const summaryChart = new Chart(ctx3, {
+            type: 'line',
+            data: {
+                datasets: [{
+                        label: 'Heap Sort',
+                        borderColor: "#C84B31",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data,
+                    },
+                    {
+                        label: 'Shaker Sort',
+                        borderColor: "#22577E",
+                        borderWidth: 1,
+                        radius: 0,
+                        data: data3,
+                    }
+                ]
+            },
+            options: {
+                animation,
+                interaction: {
+                    intersect: false
+                },
+                plugins: {
+                    legend: true
+                },
+                scales: {
+                    x: {
+                        type: 'linear',
+                    },
+                }
+            }
+        });
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function updateData() {
+            randomData = [];
+            heapSorted = [];
+            shakerSorted = [];
+
+            for (let i = 1; i <= parseInt(inputSize); i++) {
+                randomData.push(getRandomInt(1000));
+            }
+
+            console.log(randomData)
+
+            document.getElementById("arrayData").textContent = "[" + randomData.toString() + "]"
+        }
+
+        const minHeapify = (arr, n) => {
+            for (let i = 1; i < n; i++) {
+                //If child is greater than parent
+                if (arr[i] < arr[parseInt((i - 1) / 2)]) {
+                    let j = i;
+
+                    // swap child and parent until 
+                    // parent is smaller
+                    while (arr[j] < arr[parseInt((j - 1) / 2)]) {
+                        //Get the indexes of both the child
+                        const l = j;
+                        const r = parseInt((j - 1) / 2);
+
+                        //Swap
+                        [arr[l], arr[r]] = [arr[r], arr[l]];
+
+                        //reduce
+                        j = parseInt((j - 1) / 2);
+                    }
+                }
+            }
+        }
+
+        const heapSort = (arr, n = arr.length) => {
+            minHeapify(arr, n);
+
+            for (let i = n - 1; i > 0; i--) {
+                // swap value of first indexed 
+                // with last indexed 
+                [arr[0], arr[i]] = [arr[i], arr[0]];
+
+                // maintaining heap property 
+                // after each swapping 
+                let j = 0,
+                    index;
+
+                do {
+                    index = (2 * j + 1);
+
+                    // if left child is smaller than 
+                    // right child point index variable 
+                    // to right child 
+                    if (index < (i - 1) && arr[index] > arr[index + 1]) {
+                        index++;
+                    }
+
+                    // if parent is smaller than child 
+                    // then swapping parent with child 
+                    // having higher value 
+                    if (index < i && arr[j] > arr[index]) {
+                        [arr[j], arr[index]] = [arr[index], arr[j]];
+                    }
+
+                    j = index;
+                } while (index < i);
+            }
+        }
+
+        function cocktailSort(a) {
+            let swapped = true;
+            let start = 0;
+            let end = a.length;
+
+            while (swapped == true) {
+
+                // reset the swapped flag on entering the
+                // loop, because it might be true from a
+                // previous iteration.
+                swapped = false;
+
+                // loop from bottom to top same as
+                // the bubble sort
+                for (let i = start; i < end - 1; ++i) {
+                    if (a[i] > a[i + 1]) {
+                        let temp = a[i];
+                        a[i] = a[i + 1];
+                        a[i + 1] = temp;
+                        swapped = true;
+                    }
+                }
+
+                // if nothing moved, then array is sorted.
+                if (swapped == false)
+                    break;
+
+                // otherwise, reset the swapped flag so that it
+                // can be used in the next stage
+                swapped = false;
+
+                // move the end point back by one, because
+                // item at the end is in its rightful spot
+                end = end - 1;
+
+                // from top to bottom, doing the
+                // same comparison as in the previous stage
+                for (let i = end - 1; i >= start; i--) {
+                    if (a[i] > a[i + 1]) {
+                        let temp = a[i];
+                        a[i] = a[i + 1];
+                        a[i + 1] = temp;
+                        swapped = true;
+                    }
+                }
+
+                // increase the starting point, because
+                // the last stage would have moved the next
+                // smallest number to its rightful spot.
+                start = start + 1;
+            }
+        }
+
+        function sort() {
+            var start, end, time;
+
+            start = performance.now()
+            heapSorted = randomData;
+            heapSort(heapSorted);
+            end = performance.now()
+
+            time = end - start;
+            document.getElementById("tbl-heap-exectime").innerHTML = time + " ms";
+            document.getElementById("tbl-heap-operation").innerHTML = Math.ceil(inputSize * Math.log10(inputSize));
+
+            start = performance.now()
+            shakerSorted = randomData;
+            cocktailSort(shakerSorted);
+            end = performance.now()
+
+            time = end - start;
+            document.getElementById("tbl-shaker-exectime").innerHTML = time + " ms"
+            document.getElementById("tbl-shaker-operation").innerHTML = Math.pow(inputSize, 2);
+
+            document.getElementById("sortedArrayData").textContent = "[" + heapSorted.toString() + "]";
+        }
+    </script>
+</body>
+
+</html>
