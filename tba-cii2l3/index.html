@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"
+        integrity="sha256-Y26AMvaIfrZ1EQU49pf6H4QzVTrOI8m9wQYKkftBt4s=" crossorigin="anonymous"></script>
+    <link href="sticky-footer.css" rel="stylesheet">
+    <title>Tubes TBA (CII2L3) 2022 - IF4401</title>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <!-- Begin page content -->
+    <main class="flex-shrink-0">
+        <div class="container">
+            <h1 class="mt-5">Tugas Besar Teori Bahasa dan Automata</h1>
+            <p class="lead">Implementasi Lexical Analyzer dan Parser</p>
+            <p class="lead">Pada tugas besar ini, kami akan mengimplementasikan Lexical Analyzer dan Parser untuk
+                mengenali beberapa kalimat Bahasa Jawa.</p>
+
+            <p>Available word:</p>
+            <div class="row align-items-start">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <strong>Noun (Kata Benda)</strong>
+                            <ul>
+                                <li>mbak</li>
+                                <li>kakang</li>
+                                <li>iwak</li>
+                                <li>manuk</li>
+                                <li>sepur</li>
+                                <li>montor</li>
+                                <li>dokar</li>
+                                <li>tuwung</li>
+                                <li>sego</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <strong>Verb (Kata Kerja)</strong>
+                            <ul>
+                                <li>mangan</li>
+                                <li>nyopir</li>
+                                <li>tuku</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt-3">Context-Free Grammar:</p>
+            <code>
+                &lt;S&gt; ::= &lt;NN&gt; &lt;VB&gt; &lt;NN&gt;
+                <br>
+                &lt;NN&gt; ::= mbak | kakang | iwak | manuk | sepur | montor | dokar | tuwung | sego
+                <br>
+                &lt;VB&gt; ::= mangan | nyopir | tuku
+            </code>
+
+            <p class="mt-3">Example of accepted sentence:</p>
+            <ul>
+                <li>mbak tuku manuk</li>
+                <li>kakang nyopur dokar</li>
+                <li>manuk mangan sego</li>
+            </ul>
+
+            <p class="mt-3">Kalimat input:</p>
+            <div class="input-group mb-3">
+                <input type="text" id="sentence-input" class="form-control" placeholder="Sentence" aria-label="Sentence"
+                    aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" id="sentence-check" type="button"
+                    id="button-addon2">Check</button>
+            </div>
+
+            <div id="lexical-result">
+                <p class="mt-5">Hasil Lexical Analyzer:</p>
+                <div class="card">
+                    <div class="card-body">
+                        <strong id="lexical-result-title"></strong>
+                        <p id="lexical-result-description"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-5" id="parser-result">
+                <p class="mt-3">Hasil Parser:</p>
+                <div class="card">
+                    <div class="card-body">
+                        <strong id="parser-result-title"></strong>
+                        <p id="parser-result-description"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="lexical-analyzer.js"></script>
+    <script type="text/javascript" src="parser.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            dom_lexical_result = $("#lexical-result")
+            dom_lexical_result_title = $("#lexical-result-title")
+            dom_lexical_result_description = $("#lexical-result-description")
+
+            dom_parser_result = $("#parser-result")
+            dom_parser_result_title = $("#parser-result-title")
+            dom_parser_result_description = $("#parser-result-description")
+            
+            dom_lexical_result.hide()
+            dom_parser_result.hide()
+
+            $("#sentence-check").click(function () {
+                dom_lexical_result_title.text("")
+                dom_parser_result_title.text("")
+                dom_lexical_result_description.text("")
+                dom_parser_result_description.text("")
+
+                sentence = $("#sentence-input").val()
+
+                lexical_result = lexical_analysis(sentence)
+
+                if (lexical_result[0]) {
+                    dom_lexical_result_title.text("✅ " + lexical_result[1])
+
+                    parser_result = parser(sentence)
+
+                    if (parser_result[0]) {
+                        dom_parser_result_title.text("✅ " + parser_result[1])
+                    } else {
+                        dom_parser_result_title.text("❌ " + parser_result[1])
+                    }
+
+                    dom_parser_result_description.text(parser_result[2])
+
+                } else {
+                    dom_lexical_result_title.text("❌ " + lexical_result[1])
+                    dom_parser_result_title.text("❌ " + "Sentence di-Deny")
+                    dom_parser_result_description.text("Sentence di-Deny karena tidak lolos Lexical Analyzer.")
+                }
+
+                dom_lexical_result_description.text(lexical_result[2])
+
+                dom_lexical_result.show()
+                dom_parser_result.show()
+            });
+        });
+    </script>
+
+</body>
+
+</html>
