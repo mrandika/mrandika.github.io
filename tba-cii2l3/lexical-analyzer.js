@@ -57,6 +57,7 @@ function generate_transition_table(transition_table) {
     transition_table[['q0', ' ']] = 'q0'
     
     transition_table[['q30', 'm']] = 'q1'
+    transition_table[['q30', 'n']] = 'q28'
     transition_table[['q30', 'k']] = 'q11'
     transition_table[['q30', 'i']] = 'q6'
     transition_table[['q30', 's']] = 'q10'
