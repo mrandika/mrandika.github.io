@@ -2,7 +2,7 @@
     "servers": [
         {
             "name": "Andika's Anisette-v3 Signing",
-            "address": "http://192.168.2.102:6969"
+            "address": "https://anisette-v3.mrizkiandika.my.id"
         }
     ]
 }
