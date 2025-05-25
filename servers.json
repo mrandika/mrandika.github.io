@@ -2,7 +2,7 @@
     "servers": [
         {
             "name": "Andika's Anisette-v3 Signing",
-            "address": "http://localhost:6969"
+            "address": "http://192.168.2.102:6969"
         }
     ]
 }
